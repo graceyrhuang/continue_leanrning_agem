@@ -14,16 +14,15 @@ import agents
 # gan = True
 # if gan:
 # 	# get model
-discriminator_path = 'model_file/Discriminator_cpu_50.pt'
-generator_path = 'model_file/Generator_cpu_50.pt'
+current_dir = os.getcwd()
+discriminator_path = os.path.join(current_dir, 'model_file/Discriminator_cpu_50.pt')
+generator_path = os.path.join(current_dir, 'model_file/Generator_cpu_50.pt')
 
 
 GAN = CGAN_(discriminator_path, generator_path)
 label = GAN.generate_label(10)
 img = GAN.generate_image(label)
 
-# print(label)
-# print(target)
 normalize = transforms.Normalize(mean=(0.1000,), std=(0.2752,))
 val_transform = transforms.Compose([
         transforms.Pad(2, fill=0, padding_mode='constant'),
@@ -32,12 +31,6 @@ val_transform = transforms.Compose([
     ])
 
 dataset = GAN_MNIST(img, label, transform=val_transform)
+print(dataset.number_classes)
 # img, tgt = dataset[5]
 
-data_loader = torch.utils.data.DataLoader(dataset,
-                                          batch_size=4,
-                                          shuffle=True)
-
-train_dataset_splits, val_dataset_splits, task_output_space = PermutedGen(train_dataset, val_dataset,
-                                                                     args.n_permutation,
-                                                                     remap_class=not args.no_class_remap)

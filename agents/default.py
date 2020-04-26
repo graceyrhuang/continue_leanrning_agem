@@ -35,6 +35,10 @@ class NormalNN(nn.Module):
         self.reset_optimizer = False
         self.valid_out_dim = 'ALL'  # Default: 'ALL' means all output nodes are active
                                     # Set a interger here for the incremental class scenario
+        # if agent_config['gan_add']:
+        #     print('use gan method')
+        #     self.gan_add = True
+        #     self.replicate_pattern = agent_config['replicate_pattern']
 
     def init_optimizer(self):
         optimizer_arg = {'params':self.model.parameters(),

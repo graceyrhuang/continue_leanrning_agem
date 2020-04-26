@@ -61,13 +61,14 @@ def PermutedGen(train_dataset, val_dataset, n_permute, remap_class=False):
         if i==1:  # First task has no permutation
             train_datasets[name] = AppendName(train_dataset, name)
             val_datasets[name] = AppendName(val_dataset, name)
-            replicate_pattern[i].append[list(range(n))]
+            pattern = {i:list(range(n))}
         else:
             # For incremental class scenario, use remap_class=True
             first_class_ind = (i-1)*train_dataset.number_classes if remap_class else 0
             train_datasets[name] = AppendName(Permutation(train_dataset, rand_ind), name, first_class_ind=first_class_ind)
             val_datasets[name] = AppendName(Permutation(val_dataset, rand_ind), name, first_class_ind=first_class_ind)
-            replicate_pattern[i].append[rand_ind]
+            pattern = {i:rand_ind}
+        replicate_pattern.update(pattern)
         task_output_space[name] = train_dataset.number_classes
 
     return train_datasets, val_datasets, task_output_space, replicate_pattern

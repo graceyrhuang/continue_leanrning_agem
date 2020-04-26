@@ -97,6 +97,9 @@ class Permutation(data.Dataset):
         img = img.view(-1)[self.permute_idx].view(shape)
         return img, target
 
+    # def get_permuted_idx(self, label):
+    #     return self.permute_idx
+
 
 class Storage(data.Dataset):
     """

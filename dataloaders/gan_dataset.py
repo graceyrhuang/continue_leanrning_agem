@@ -3,6 +3,7 @@ import numpy as np
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms, utils
+from PIL import Image
 
 class discriminator(nn.Module):
     def __init__(self):
@@ -72,6 +73,13 @@ class CGAN_():
         label = torch.from_numpy(np.random.randint(low=0, high=9, size=label_num))
         return label
 
+    def de_norm(self, image):
+        # np_value = 255 * (0.5 * image.detach().numpy() + 0.5)
+        # pil_value = Image.fromarray(np.uint8(np_value))
+        original = 255 * (0.5 * image + 0.5)
+        return original
+
+
     def generate_image(self, label):
         image_num = label.shape[0]
         data_list = []
@@ -85,7 +93,7 @@ class CGAN_():
             generator_input = torch.from_numpy(generator_input).float()
             # print('G_i:',generator_input.shape)
             data = self.G(generator_input)
-            data = torch.squeeze(data)
+            data = self.de_norm(torch.squeeze(data))
             # print('data:', data.shape)
             data_list.append(data)
 
@@ -95,9 +103,11 @@ class CGAN_():
 
 class GAN_MNIST(Dataset):
     '''constuct dataset for GAN generated image'''
-    def __init__(self, img, target, transform=None):
+    def __init__(self, img, target, transform=None, target_transform=None):
         self.samples = []
         self.transform = transform
+        self.target_transform = target_transform
+        self.number_classes = 10
         for i in range(target.shape[0]):
             self.samples.append((img[i], target[i]))
 
@@ -106,9 +116,22 @@ class GAN_MNIST(Dataset):
 
     def __getitem__(self, idx):
         (img, target) = self.samples[idx]
-        sample = {'image': img, 'target': target}
-        if self.transform:
-            sample = self.transform(sample)
-        return sample
+        # sample = {'image': img, 'target': target}
+        # if self.transform:
+        #     sample['image'] = self.transform(sample['image'])
+
+        img = Image.fromarray(img.detach().numpy(), mode='L')
+        target = int(target.numpy())
+
+        if self.transform is not None:
+            img = self.transform(img)
+
+        if self.target_transform is not None:
+            target = self.target_transform(target)
+
+        return img, target
+
+
+
 
 

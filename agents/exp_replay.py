@@ -1,9 +1,11 @@
 import torch
+import os
 import numpy as np
 from importlib import import_module
 from .default import NormalNN
 from .regularization import SI, L2, EWC, MAS
-from dataloaders.wrapper import Storage
+from dataloaders.wrapper import Storage, AppendName, Permutation
+from dataloaders.gan_dataset import *
 
 
 class Memory(Storage):
@@ -18,6 +20,7 @@ class Naive_Rehearsal(NormalNN):
         self.task_count = 0
         self.memory_size = 1000
         self.task_memory = {}
+
 
     def learn_batch(self, train_loader, val_loader=None):
         # 1.Combine training set
@@ -104,6 +107,14 @@ class AGEM(Naive_Rehearsal):
         self.params = {n: p for n, p in self.model.named_parameters() if p.requires_grad}
         self.task_grads = {}
         self.task_mem_cache = {}
+        self.gan_add = False
+        if agent_config['gan_add']:
+            print('use gan method')
+            self.gan_add = True
+            current_dir = os.getcwd()
+            self.replicate_pattern = agent_config['replicate_pattern']
+            self.generator_path = os.path.join(current_dir, 'model_file/Generator_cpu_50.pt')
+            self.discriminator_path = os.path.join(current_dir, 'model_file/Discriminator_cpu_50.pt')
 
     def grad_to_vector(self):
         vec = []
@@ -130,7 +141,6 @@ class AGEM(Naive_Rehearsal):
 
     def get_grad(self, current_grad, previous_avg_grad):
         #print(memories_np.shape, gradient_np.shape)
-        print('new grad')
         dotp = (current_grad * previous_avg_grad).sum()
         ref_mag = (previous_avg_grad * previous_avg_grad).sum()
         new_grad = current_grad - ((dotp / ref_mag) *  previous_avg_grad)
@@ -138,7 +148,26 @@ class AGEM(Naive_Rehearsal):
             new_grad = new_grad.cuda()
         return new_grad
 
-    def learn_batch(self, train_loader, use_gan=False, gan_model=None, val_loader=None):
+    def gan_dataset(self, dataset_num):
+        GAN = CGAN_(self.discriminator_path, self.generator_path)
+        label = GAN.generate_label(dataset_num)
+        img = GAN.generate_image(label)
+
+        normalize = transforms.Normalize(mean=(0.1000,), std=(0.2752,))
+        transformation = transforms.Compose([
+                transforms.Pad(2, fill=0, padding_mode='constant'),
+                transforms.ToTensor(),
+                normalize,])
+        dataset = GAN_MNIST(img, label, transform=transformation)
+
+        # do the permutation and target name 
+        remap_class = True
+        first_class_ind = (self.task_count-1)*dataset.number_classes if remap_class else 0
+        dataset = AppendName(Permutation(dataset, self.replicate_pattern[self.task_count]), 
+            str(self.task_count), first_class_ind=first_class_ind)
+        return dataset
+
+    def learn_batch(self, train_loader, val_loader=None):
 
         # 1.Update model as normal
         super(AGEM, self).learn_batch(train_loader, val_loader)
@@ -147,43 +176,48 @@ class AGEM(Naive_Rehearsal):
         # (a) Decide the number of samples for being saved
         num_sample_per_task = self.memory_size // self.task_count
         num_sample_per_task = min(len(train_loader.dataset),num_sample_per_task)
+        print('learn_batch')
 
-        if use_gan == False:
-            # (b) Reduce current exemplar set to reserve the space for the new dataset
-            for storage in self.task_memory.values():
+        # (b) Reduce current exemplar set to reserve the space for the new dataset
+        for storage in self.task_memory.values():
                 storage.reduce(num_sample_per_task)
+        self.task_memory[self.task_count] = Memory()  # Initialize the memory slot
+        
+        print('task memory', self.task_memory[self.task_count])
+        for storage in self.task_memory[self.task_count]:
+            print('storage:', storage)
+
+
+
+        if self.gan_add == False:
             # (c) Randomly choose some samples from new task and save them to the memory
-            self.task_memory[self.task_count] = Memory()  # Initialize the memory slot
+
             randind = torch.randperm(len(train_loader.dataset))[:num_sample_per_task]  # randomly sample some data
             for ind in randind:  # save it to the memory
                 self.task_memory[self.task_count].append(train_loader.dataset[ind])
-            # (d) Cache the data for faster processing
-            for t, mem in self.task_memory.items():
-                # Concatenate all data in each task
-                mem_loader = torch.utils.data.DataLoader(mem,
-                                                         batch_size=len(mem),
-                                                         shuffle=False,
-                                                         num_workers=2)
-                assert len(mem_loader)==1,'The length of mem_loader should be 1'
-                for i, (mem_input, mem_target, mem_task) in enumerate(mem_loader):
-                    if self.gpu:
-                        mem_input = mem_input.cuda()
-                        mem_target = mem_target.cuda()
-                self.task_mem_cache[t] = {'data':mem_input,'target':mem_target,'task':mem_task}
-        elif use_gan == True:
+        
+        elif self.gan_add == True:
             # generate as much as the request of data memory
-            self.task_memory[self.task_count] = Memory()  # Initialize the memory slot
-            for ind in range(num_sample_per_task):
-                self.task_memory[self.task_count].append(train_loader.dataset[ind])
+            generate_dataset = self.gan_dataset(num_sample_per_task)
+            for ind in range(num_sample_per_task):  # save it to the memory
+                self.task_memory[self.task_count].append(generate_dataset[ind])
 
 
+        # (d) Cache the data for faster processing
+        for t, mem in self.task_memory.items():
+            # Concatenate all data in each task
+            mem_loader = torch.utils.data.DataLoader(mem,
+                                                     batch_size=len(mem),
+                                                     shuffle=False,
+                                                     num_workers=2)
+            assert len(mem_loader)==1,'The length of mem_loader should be 1'
+            for i, (mem_input, mem_target, mem_task) in enumerate(mem_loader):
+                if self.gpu:
+                    mem_input = mem_input.cuda()
+                    mem_target = mem_target.cuda()
+            self.task_mem_cache[t] = {'data':mem_input,'target':mem_target,'task':mem_task}
 
-            # seal into data loader
-
-
-        else:
-            raise ValueError('please specify is Gan should be uesed')
-
+        # seal into data loader
 
 
     def update_model(self, inputs, targets, tasks):
@@ -194,6 +228,10 @@ class AGEM(Naive_Rehearsal):
                 self.zero_grad()
                 # feed the data from memory and collect the gradients
                 mem_out = self.forward(self.task_mem_cache[t]['data'])
+                print(mem_out, self.task_mem_cache[t]['target'], self.task_mem_cache[t]['task'])
+                print('mem_out', mem_out.shape)
+                print('target', self.task_mem_cache[t]['target'].shape)
+                print( 'task', self.task_mem_cache[t]['task'])
                 mem_loss = self.criterion(mem_out, self.task_mem_cache[t]['target'], self.task_mem_cache[t]['task'])
                 mem_loss.backward()
                 # Store the grads
