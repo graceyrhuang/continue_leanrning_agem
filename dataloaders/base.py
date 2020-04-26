@@ -2,6 +2,7 @@ import torchvision
 from torchvision import transforms
 from .wrapper import CacheClassLabel
 
+
 def MNIST(dataroot, train_aug=False):
     # Add padding to make 32x32
     #normalize = transforms.Normalize(mean=(0.1307,), std=(0.3081,))  # for 28x28

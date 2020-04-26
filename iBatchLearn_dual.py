@@ -26,68 +26,68 @@ def run(args):
                                                                           other_split_sz=args.other_split_size,
                                                                           rand_split=args.rand_split,
                                                                           remap_class=not args.no_class_remap)
+    print(replicate_pattern)
+    # # Prepare the Agent (model)
+    # agent_config = {'lr': args.lr, 'momentum': args.momentum, 'weight_decay': args.weight_decay,'schedule': args.schedule,
+    #                 'model_type':args.model_type, 'model_name': args.model_name, 'model_weights':args.model_weights,
+    #                 'out_dim':{'All':args.force_out_dim} if args.force_out_dim>0 else task_output_space,
+    #                 'optimizer':args.optimizer,
+    #                 'print_freq':args.print_freq, 'gpuid': args.gpuid,
+    #                 'reg_coef':args.reg_coef}
+    # agent = agents.__dict__[args.agent_type].__dict__[args.agent_name](agent_config)
+    # print(agent.model)
+    # print('#parameter of model:',agent.count_parameter())
 
-    # Prepare the Agent (model)
-    agent_config = {'lr': args.lr, 'momentum': args.momentum, 'weight_decay': args.weight_decay,'schedule': args.schedule,
-                    'model_type':args.model_type, 'model_name': args.model_name, 'model_weights':args.model_weights,
-                    'out_dim':{'All':args.force_out_dim} if args.force_out_dim>0 else task_output_space,
-                    'optimizer':args.optimizer,
-                    'print_freq':args.print_freq, 'gpuid': args.gpuid,
-                    'reg_coef':args.reg_coef}
-    agent = agents.__dict__[args.agent_type].__dict__[args.agent_name](agent_config)
-    print(agent.model)
-    print('#parameter of model:',agent.count_parameter())
+    # # Decide split ordering
+    # task_names = sorted(list(task_output_space.keys()), key=int)
+    # print('Task order:',task_names)
+    # if args.rand_split_order:
+    #     shuffle(task_names)
+    #     print('Shuffled task order:', task_names)
 
-    # Decide split ordering
-    task_names = sorted(list(task_output_space.keys()), key=int)
-    print('Task order:',task_names)
-    if args.rand_split_order:
-        shuffle(task_names)
-        print('Shuffled task order:', task_names)
+    # acc_table = OrderedDict()
+    # if args.offline_training:  # Non-incremental learning / offline_training / measure the upper-bound performance
+    #     task_names = ['All']
+    #     train_dataset_all = torch.utils.data.ConcatDataset(train_dataset_splits.values())
+    #     val_dataset_all = torch.utils.data.ConcatDataset(val_dataset_splits.values())
+    #     train_loader = torch.utils.data.DataLoader(train_dataset_all,
+    #                                                batch_size=args.batch_size, shuffle=True, num_workers=args.workers)
+    #     val_loader = torch.utils.data.DataLoader(val_dataset_all,
+    #                                              batch_size=args.batch_size, shuffle=False, num_workers=args.workers)
 
-    acc_table = OrderedDict()
-    if args.offline_training:  # Non-incremental learning / offline_training / measure the upper-bound performance
-        task_names = ['All']
-        train_dataset_all = torch.utils.data.ConcatDataset(train_dataset_splits.values())
-        val_dataset_all = torch.utils.data.ConcatDataset(val_dataset_splits.values())
-        train_loader = torch.utils.data.DataLoader(train_dataset_all,
-                                                   batch_size=args.batch_size, shuffle=True, num_workers=args.workers)
-        val_loader = torch.utils.data.DataLoader(val_dataset_all,
-                                                 batch_size=args.batch_size, shuffle=False, num_workers=args.workers)
+    #     agent.learn_batch(train_loader, val_loader)
 
-        agent.learn_batch(train_loader, val_loader)
+    #     acc_table['All'] = {}
+    #     acc_table['All']['All'] = agent.validation(val_loader)
 
-        acc_table['All'] = {}
-        acc_table['All']['All'] = agent.validation(val_loader)
+    # else:  # Incremental learning
+    #     # Feed data to agent and evaluate agent's performance
+    #     for i in range(len(task_names)):
+    #         train_name = task_names[i]
+    #         print('======================',train_name,'=======================')
+    #         train_loader = torch.utils.data.DataLoader(train_dataset_splits[train_name],
+    #                                                     batch_size=args.batch_size, shuffle=True, num_workers=args.workers)
+    #         val_loader = torch.utils.data.DataLoader(val_dataset_splits[train_name],
+    #                                                   batch_size=args.batch_size, shuffle=False, num_workers=args.workers)
 
-    else:  # Incremental learning
-        # Feed data to agent and evaluate agent's performance
-        for i in range(len(task_names)):
-            train_name = task_names[i]
-            print('======================',train_name,'=======================')
-            train_loader = torch.utils.data.DataLoader(train_dataset_splits[train_name],
-                                                        batch_size=args.batch_size, shuffle=True, num_workers=args.workers)
-            val_loader = torch.utils.data.DataLoader(val_dataset_splits[train_name],
-                                                      batch_size=args.batch_size, shuffle=False, num_workers=args.workers)
+    #         if args.incremental_class:
+    #             agent.add_valid_output_dim(task_output_space[train_name])
 
-            if args.incremental_class:
-                agent.add_valid_output_dim(task_output_space[train_name])
+    #         # Learn
+    #         agent.learn_batch(train_loader, val_loader)
 
-            # Learn
-            agent.learn_batch(train_loader, val_loader)
+    #         # Evaluate
+    #         acc_table[train_name] = OrderedDict()
+    #         for j in range(i+1):
+    #             val_name = task_names[j]
+    #             print('validation split name:', val_name)
+    #             val_data = val_dataset_splits[val_name] if not args.eval_on_train_set else train_dataset_splits[val_name]
+    #             val_loader = torch.utils.data.DataLoader(val_data,
+    #                                                      batch_size=args.batch_size, shuffle=False,
+    #                                                      num_workers=args.workers)
+    #             acc_table[val_name][train_name] = agent.validation(val_loader)
 
-            # Evaluate
-            acc_table[train_name] = OrderedDict()
-            for j in range(i+1):
-                val_name = task_names[j]
-                print('validation split name:', val_name)
-                val_data = val_dataset_splits[val_name] if not args.eval_on_train_set else train_dataset_splits[val_name]
-                val_loader = torch.utils.data.DataLoader(val_data,
-                                                         batch_size=args.batch_size, shuffle=False,
-                                                         num_workers=args.workers)
-                acc_table[val_name][train_name] = agent.validation(val_loader)
-
-    return acc_table, task_names
+    # return acc_table, task_names
 
 def get_args(argv):
     # This function prepares the variables shared across demo.py
@@ -146,30 +146,30 @@ if __name__ == '__main__':
         args.reg_coef = reg_coef
         avg_final_acc[reg_coef] = np.zeros(args.repeat)
         for r in range(args.repeat):
+            run(args)
+    #         # Run the experiment
+    #         acc_table, task_names = run(args)
+    #         print(acc_table)
 
-            # Run the experiment
-            acc_table, task_names = run(args)
-            print(acc_table)
+    #         # Calculate average performance across tasks
+    #         # Customize this part for a different performance metric
+    #         avg_acc_history = [0] * len(task_names)
+    #         for i in range(len(task_names)):
+    #             train_name = task_names[i]
+    #             cls_acc_sum = 0
+    #             for j in range(i + 1):
+    #                 val_name = task_names[j]
+    #                 cls_acc_sum += acc_table[val_name][train_name]
+    #             avg_acc_history[i] = cls_acc_sum / (i + 1)
+    #             print('Task', train_name, 'average acc:', avg_acc_history[i])
 
-            # Calculate average performance across tasks
-            # Customize this part for a different performance metric
-            avg_acc_history = [0] * len(task_names)
-            for i in range(len(task_names)):
-                train_name = task_names[i]
-                cls_acc_sum = 0
-                for j in range(i + 1):
-                    val_name = task_names[j]
-                    cls_acc_sum += acc_table[val_name][train_name]
-                avg_acc_history[i] = cls_acc_sum / (i + 1)
-                print('Task', train_name, 'average acc:', avg_acc_history[i])
+    #         # Gather the final avg accuracy
+    #         avg_final_acc[reg_coef][r] = avg_acc_history[-1]
 
-            # Gather the final avg accuracy
-            avg_final_acc[reg_coef][r] = avg_acc_history[-1]
-
-            # Print the summary so far
-            print('===Summary of experiment repeats:',r+1,'/',args.repeat,'===')
-            print('The regularization coefficient:', args.reg_coef)
-            print('The last avg acc of all repeats:', avg_final_acc[reg_coef])
-            print('mean:', avg_final_acc[reg_coef].mean(), 'std:', avg_final_acc[reg_coef].std())
-    for reg_coef,v in avg_final_acc.items():
-        print('reg_coef:', reg_coef,'mean:', avg_final_acc[reg_coef].mean(), 'std:', avg_final_acc[reg_coef].std())
+    #         # Print the summary so far
+    #         print('===Summary of experiment repeats:',r+1,'/',args.repeat,'===')
+    #         print('The regularization coefficient:', args.reg_coef)
+    #         print('The last avg acc of all repeats:', avg_final_acc[reg_coef])
+    #         print('mean:', avg_final_acc[reg_coef].mean(), 'std:', avg_final_acc[reg_coef].std())
+    # for reg_coef,v in avg_final_acc.items():
+    #     print('reg_coef:', reg_coef,'mean:', avg_final_acc[reg_coef].mean(), 'std:', avg_final_acc[reg_coef].std())
