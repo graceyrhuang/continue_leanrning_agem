@@ -23,6 +23,7 @@ class Naive_Rehearsal(NormalNN):
 
 
     def learn_batch(self, train_loader, val_loader=None):
+        print('rehersal learn batch')
         # 1.Combine training set
         dataset_list = []
         for storage in self.task_memory.values():
@@ -40,6 +41,7 @@ class Naive_Rehearsal(NormalNN):
 
         # 3.Randomly decide the images to stay in the memory
         self.task_count += 1
+        print('naive_rehersal task count', self.task_count)
         # (a) Decide the number of samples for being saved
         num_sample_per_task = self.memory_size // self.task_count
         num_sample_per_task = min(len(train_loader.dataset),num_sample_per_task)
@@ -148,11 +150,12 @@ class AGEM(Naive_Rehearsal):
             new_grad = new_grad.cuda()
         return new_grad
 
-    def gan_dataset(self, dataset_num):
+    def gan_dataloader(self, dataset_num):
         GAN = CGAN_(self.discriminator_path, self.generator_path)
         label = GAN.generate_label(dataset_num)
         img = GAN.generate_image(label)
         data_pack = {}
+        name = str(self.task_count // 2)
 
         normalize = transforms.Normalize(mean=(0.1000,), std=(0.2752,))
         transformation = transforms.Compose([
@@ -163,14 +166,19 @@ class AGEM(Naive_Rehearsal):
 
         # do the permutation and target name 
         remap_class = True
-        first_class_ind = (self.task_count-1)*dataset.number_classes if remap_class else 0
+        first_class_ind = (int(name)-1)*dataset.number_classes if remap_class else 0
         # dataset = AppendName(Permutation(dataset, self.replicate_pattern[self.task_count]),
         #     str(self.task_count), first_class_ind=first_class_ind)
         # return  dataset
 
-        data_pack[str(self.task_count)] = AppendName(Permutation(dataset, self.replicate_pattern[self.task_count]),
-            str(self.task_count), first_class_ind=first_class_ind)
-        return data_pack
+        # create the dataset in the dict version
+        data_pack[name] = AppendName(Permutation(dataset, self.replicate_pattern[int(name)]),
+            name, first_class_ind=first_class_ind)
+        # create corresbonded dataloader
+        gan_dataloader = torch.utils.data.DataLoader(data_pack[name],
+                                    batch_size=128, shuffle=True, num_workers=2)
+
+        return gan_dataloader
 
     def learn_batch(self, train_loader, val_loader=None):
 
@@ -178,10 +186,11 @@ class AGEM(Naive_Rehearsal):
         super(AGEM, self).learn_batch(train_loader, val_loader)
         # 2.Randomly decide the images to stay in the memory
         self.task_count += 1
+        print('learn batch task count', self.task_count)
         # (a) Decide the number of samples for being saved
         num_sample_per_task = self.memory_size // self.task_count
         num_sample_per_task = min(len(train_loader.dataset),num_sample_per_task)
-        print('learn_batch')
+        print('agem learn_batch')
 
         # (b) Reduce current exemplar set to reserve the space for the new dataset
         for storage in self.task_memory.values():
@@ -198,9 +207,9 @@ class AGEM(Naive_Rehearsal):
         
         elif self.gan_add == True:
             # generate as much as the request of data memory
-            generate_dataset = self.gan_dataset(num_sample_per_task)
+            gan_dataloader = self.gan_dataloader(num_sample_per_task)
             for ind in range(num_sample_per_task):  # save it to the memory
-                self.task_memory[self.task_count].append(generate_dataset[str(self.task_count)][ind])
+                self.task_memory[self.task_count].append(gan_dataloader.dataset[ind])
 
 
         # (d) Cache the data for faster processing
@@ -212,11 +221,11 @@ class AGEM(Naive_Rehearsal):
                                                      num_workers=2)
             assert len(mem_loader)==1,'The length of mem_loader should be 1'
             for i, (mem_input, mem_target, mem_task) in enumerate(mem_loader):
-                if i == 1:
-                    print(i, mem_input, mem_target, mem_task)
                 if self.gpu:
                     mem_input = mem_input.cuda()
                     mem_target = mem_target.cuda()
+            print("mem_task", mem_task)
+            print("self_task", self.task_count)
             self.task_mem_cache[t] = {'data':mem_input,'target':mem_target,'task':mem_task}
 
         # seal into data loader
@@ -231,9 +240,9 @@ class AGEM(Naive_Rehearsal):
                 self.zero_grad()
                 # feed the data from memory and collect the gradients
                 mem_out = self.forward(self.task_mem_cache[t]['data'])
-                if self.task_count > 2:
-                    print('task count', self.task_count)
-                    print(mem_out, self.task_mem_cache[t]['target'], self.task_mem_cache[t]['task'])
+                # if self.task_count > 2:
+                    # print('task count', self.task_count)
+                    # print(mem_out, self.task_mem_cache[t]['target'], self.task_mem_cache[t]['task'])
                 mem_loss = self.criterion(mem_out, self.task_mem_cache[t]['target'], self.task_mem_cache[t]['task'])
                 mem_loss.backward()
                 # Store the grads
