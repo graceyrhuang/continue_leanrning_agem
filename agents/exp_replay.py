@@ -115,9 +115,9 @@ class AGEM(Naive_Rehearsal):
             self.gan_add = True
             current_dir = os.getcwd()
             self.replicate_pattern = agent_config['replicate_pattern']
-            self.generator_path = os.path.join(current_dir, 'model_file/Generator_cpu_50.pt')
-            self.discriminator_path = os.path.join(current_dir, 'model_file/Discriminator_cpu_50.pt')
-
+            self.generator_path = os.path.join(current_dir, 'model_file/Generator_cpu_75.pt')
+            self.discriminator_path = os.path.join(current_dir, 'model_file/Discriminator_cpu_75.pt')
+            print('generator:', self.generator_path)
     def grad_to_vector(self):
         vec = []
         for n,p in self.params.items():
@@ -224,8 +224,8 @@ class AGEM(Naive_Rehearsal):
                 if self.gpu:
                     mem_input = mem_input.cuda()
                     mem_target = mem_target.cuda()
-            print("mem_task", mem_task)
-            print("self_task", self.task_count)
+            # print("mem_task", mem_task)
+            # print("self_task", self.task_count)
             self.task_mem_cache[t] = {'data':mem_input,'target':mem_target,'task':mem_task}
 
         # seal into data loader

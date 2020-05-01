@@ -1,0 +1,351 @@
+{'1': 10, '2': 10, '3': 10, '4': 10, '5': 10, '6': 10, '7': 10, '8': 10, '9': 10, '10': 10}
+MLP(
+  (linear): Sequential(
+    (0): Linear(in_features=1024, out_features=1000, bias=True)
+    (1): ReLU(inplace=True)
+    (2): Linear(in_features=1000, out_features=1000, bias=True)
+    (3): ReLU(inplace=True)
+  )
+  (last): ModuleDict(
+    (All): Linear(in_features=1000, out_features=100, bias=True)
+  )
+)
+#parameter of model: 2126100
+Task order: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+====================== 1 =======================
+Incremental class: Old valid output dimension: ALL
+Incremental class: New Valid output dimension: 10
+rehersal learn batch
+Epoch:0
+/usr/local/lib/python3.7/site-packages/torch/optim/lr_scheduler.py:82: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule.See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  "https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate", UserWarning)
+LR: 0.1
+Itr		Time		  Data		  Loss		Acc
+[0/469]	0.1016 (0.1016)	0.0777 (0.0777)	2.316 (2.316)	0.00 (0.00)
+[100/469]	0.0124 (0.0139)	0.0006 (0.0012)	0.308 (0.715)	90.62 (79.31)
+[200/469]	0.0126 (0.0132)	0.0004 (0.0008)	0.310 (0.505)	92.19 (85.14)
+[300/469]	0.0125 (0.0129)	0.0004 (0.0007)	0.201 (0.417)	94.53 (87.71)
+[400/469]	0.0125 (0.0129)	0.0004 (0.0006)	0.205 (0.362)	93.75 (89.30)
+[468/469]	0.0083 (0.0129)	0.0003 (0.0006)	0.172 (0.334)	94.79 (90.12)
+ * Train Acc 90.122
+ * Val Acc 95.340, Total time 0.60
+naive_rehersal task count 1
+learn batch task count 2
+agem learn_batch
+validation split name: 1
+ * Val Acc 95.340, Total time 0.59
+====================== 2 =======================
+Incremental class: Old valid output dimension: 10
+Incremental class: New Valid output dimension: 20
+rehersal learn batch
+Epoch:0
+LR: 0.1
+Itr		Time		  Data		  Loss		Acc
+[0/938]	0.2749 (0.2749)	0.0301 (0.0301)	1.783 (1.783)	48.44 (48.44)
+[100/938]	0.2553 (0.2335)	0.0005 (0.0007)	0.285 (0.543)	91.41 (85.60)
+[200/938]	0.2311 (0.2371)	0.0005 (0.0006)	0.266 (0.396)	91.41 (89.31)
+[300/938]	0.2711 (0.2375)	0.0004 (0.0006)	0.212 (0.330)	92.19 (90.97)
+[400/938]	0.2373 (0.2390)	0.0004 (0.0005)	0.148 (0.289)	95.31 (92.09)
+[500/938]	0.2468 (0.2393)	0.0008 (0.0005)	0.156 (0.260)	95.31 (92.86)
+[600/938]	0.2181 (0.2393)	0.0004 (0.0005)	0.121 (0.237)	96.09 (93.46)
+[700/938]	0.2526 (0.2402)	0.0004 (0.0005)	0.052 (0.220)	99.22 (93.94)
+[800/938]	0.2287 (0.2396)	0.0005 (0.0005)	0.098 (0.206)	98.44 (94.35)
+[900/938]	0.2339 (0.2394)	0.0004 (0.0005)	0.092 (0.194)	96.88 (94.66)
+[937/938]	0.2249 (0.2390)	0.0004 (0.0005)	0.025 (0.190)	100.00 (94.77)
+ * Train Acc 94.770
+ * Val Acc 95.090, Total time 0.84
+naive_rehersal task count 3
+learn batch task count 4
+agem learn_batch
+validation split name: 1
+ * Val Acc 95.800, Total time 0.65
+validation split name: 2
+ * Val Acc 95.090, Total time 0.79
+====================== 3 =======================
+Incremental class: Old valid output dimension: 20
+Incremental class: New Valid output dimension: 30
+rehersal learn batch
+Epoch:0
+LR: 0.1
+Itr		Time		  Data		  Loss		Acc
+[0/938]	0.3191 (0.3191)	0.0336 (0.0336)	2.098 (2.098)	45.31 (45.31)
+[100/938]	0.2496 (0.2606)	0.0004 (0.0008)	0.310 (0.500)	90.62 (85.99)
+[200/938]	0.2690 (0.2607)	0.0005 (0.0006)	0.195 (0.358)	92.19 (89.87)
+[300/938]	0.2486 (0.2582)	0.0005 (0.0006)	0.111 (0.293)	97.66 (91.69)
+[400/938]	0.2485 (0.2576)	0.0004 (0.0005)	0.176 (0.260)	95.31 (92.62)
+[500/938]	0.2636 (0.2580)	0.0005 (0.0005)	0.156 (0.233)	94.53 (93.45)
+[600/938]	0.2520 (0.2587)	0.0004 (0.0005)	0.052 (0.214)	99.22 (93.96)
+[700/938]	0.2522 (0.2586)	0.0005 (0.0005)	0.075 (0.200)	96.09 (94.38)
+[800/938]	0.2605 (0.2587)	0.0005 (0.0005)	0.054 (0.188)	98.44 (94.74)
+[900/938]	0.2603 (0.2592)	0.0004 (0.0005)	0.088 (0.177)	96.88 (95.03)
+[937/938]	0.2533 (0.2592)	0.0004 (0.0005)	0.064 (0.174)	96.88 (95.12)
+ * Train Acc 95.122
+ * Val Acc 94.750, Total time 0.83
+naive_rehersal task count 5
+learn batch task count 6
+agem learn_batch
+validation split name: 1
+ * Val Acc 95.390, Total time 0.64
+validation split name: 2
+ * Val Acc 95.210, Total time 0.82
+validation split name: 3
+ * Val Acc 94.750, Total time 0.84
+====================== 4 =======================
+Incremental class: Old valid output dimension: 30
+Incremental class: New Valid output dimension: 40
+rehersal learn batch
+Epoch:0
+LR: 0.1
+Itr		Time		  Data		  Loss		Acc
+[0/938]	0.3696 (0.3696)	0.0337 (0.0337)	2.186 (2.186)	53.12 (53.12)
+[100/938]	0.2936 (0.3021)	0.0004 (0.0008)	0.307 (0.487)	92.19 (85.78)
+[200/938]	0.3016 (0.3005)	0.0004 (0.0006)	0.198 (0.348)	94.53 (89.86)
+[300/938]	0.3017 (0.3012)	0.0005 (0.0006)	0.101 (0.287)	98.44 (91.64)
+[400/938]	0.2989 (0.2999)	0.0004 (0.0005)	0.075 (0.252)	99.22 (92.71)
+[500/938]	0.3070 (0.2996)	0.0005 (0.0005)	0.151 (0.226)	96.88 (93.46)
+[600/938]	0.3052 (0.3000)	0.0005 (0.0005)	0.079 (0.208)	98.44 (93.98)
+[700/938]	0.3032 (0.3001)	0.0004 (0.0005)	0.118 (0.194)	96.09 (94.39)
+[800/938]	0.3015 (0.3001)	0.0004 (0.0005)	0.114 (0.182)	92.97 (94.73)
+[900/938]	0.3004 (0.3004)	0.0004 (0.0005)	0.070 (0.172)	98.44 (95.05)
+[937/938]	0.2843 (0.3005)	0.0004 (0.0005)	0.002 (0.168)	100.00 (95.15)
+ * Train Acc 95.148
+ * Val Acc 95.790, Total time 0.85
+naive_rehersal task count 7
+learn batch task count 8
+agem learn_batch
+validation split name: 1
+ * Val Acc 95.290, Total time 0.59
+validation split name: 2
+ * Val Acc 95.050, Total time 0.77
+validation split name: 3
+ * Val Acc 94.730, Total time 0.84
+validation split name: 4
+ * Val Acc 95.790, Total time 0.80
+====================== 5 =======================
+Incremental class: Old valid output dimension: 40
+Incremental class: New Valid output dimension: 50
+rehersal learn batch
+Epoch:0
+LR: 0.1
+Itr		Time		  Data		  Loss		Acc
+[0/938]	0.4187 (0.4187)	0.0356 (0.0356)	2.750 (2.750)	47.66 (47.66)
+[100/938]	0.3372 (0.3402)	0.0004 (0.0008)	0.183 (0.480)	93.75 (86.29)
+[200/938]	0.3347 (0.3358)	0.0004 (0.0006)	0.113 (0.336)	96.88 (90.35)
+[300/938]	0.3455 (0.3376)	0.0004 (0.0006)	0.144 (0.276)	96.88 (92.02)
+[400/938]	0.3297 (0.3382)	0.0004 (0.0005)	0.154 (0.245)	96.09 (92.94)
+[500/938]	0.3328 (0.3381)	0.0004 (0.0005)	0.088 (0.219)	96.88 (93.68)
+[600/938]	0.3525 (0.3385)	0.0005 (0.0005)	0.101 (0.202)	96.88 (94.21)
+[700/938]	0.3358 (0.3385)	0.0004 (0.0005)	0.141 (0.187)	96.88 (94.67)
+[800/938]	0.3336 (0.3388)	0.0004 (0.0005)	0.084 (0.175)	97.66 (95.02)
+[900/938]	0.3416 (0.3385)	0.0005 (0.0005)	0.070 (0.165)	97.66 (95.28)
+[937/938]	0.3414 (0.3387)	0.0005 (0.0005)	0.106 (0.162)	96.88 (95.38)
+ * Train Acc 95.382
+ * Val Acc 95.490, Total time 0.76
+naive_rehersal task count 9
+learn batch task count 10
+agem learn_batch
+validation split name: 1
+ * Val Acc 95.290, Total time 0.65
+validation split name: 2
+ * Val Acc 94.840, Total time 0.79
+validation split name: 3
+ * Val Acc 94.630, Total time 0.80
+validation split name: 4
+ * Val Acc 94.850, Total time 0.83
+validation split name: 5
+ * Val Acc 95.490, Total time 0.82
+====================== 6 =======================
+Incremental class: Old valid output dimension: 50
+Incremental class: New Valid output dimension: 60
+rehersal learn batch
+Epoch:0
+LR: 0.1
+Itr		Time		  Data		  Loss		Acc
+[0/938]	0.4415 (0.4415)	0.0353 (0.0353)	3.077 (3.077)	47.66 (47.66)
+[100/938]	0.3728 (0.3720)	0.0005 (0.0008)	0.158 (0.482)	97.66 (86.22)
+[200/938]	0.3740 (0.3724)	0.0004 (0.0006)	0.204 (0.342)	92.97 (90.15)
+[300/938]	0.3706 (0.3718)	0.0005 (0.0006)	0.140 (0.282)	97.66 (91.82)
+[400/938]	0.4161 (0.3750)	0.0005 (0.0005)	0.143 (0.246)	96.09 (92.90)
+[500/938]	0.4436 (0.3887)	0.0007 (0.0005)	0.150 (0.220)	95.31 (93.60)
+[600/938]	0.4337 (0.3974)	0.0004 (0.0005)	0.142 (0.203)	96.88 (94.13)
+[700/938]	0.4493 (0.4027)	0.0005 (0.0005)	0.087 (0.189)	96.88 (94.54)
+[800/938]	0.4368 (0.4046)	0.0004 (0.0005)	0.103 (0.176)	98.44 (94.93)
+[900/938]	0.4027 (0.4013)	0.0004 (0.0005)	0.103 (0.167)	98.44 (95.19)
+[937/938]	0.4028 (0.4007)	0.0004 (0.0005)	0.027 (0.163)	100.00 (95.30)
+ * Train Acc 95.303
+ * Val Acc 95.460, Total time 0.78
+naive_rehersal task count 11
+learn batch task count 12
+agem learn_batch
+validation split name: 1
+ * Val Acc 95.120, Total time 0.59
+validation split name: 2
+ * Val Acc 94.820, Total time 0.82
+validation split name: 3
+ * Val Acc 94.610, Total time 0.81
+validation split name: 4
+ * Val Acc 94.610, Total time 0.91
+validation split name: 5
+ * Val Acc 95.060, Total time 0.87
+validation split name: 6
+ * Val Acc 95.460, Total time 0.83
+====================== 7 =======================
+Incremental class: Old valid output dimension: 60
+Incremental class: New Valid output dimension: 70
+rehersal learn batch
+Epoch:0
+LR: 0.1
+Itr		Time		  Data		  Loss		Acc
+[0/938]	0.4749 (0.4749)	0.0341 (0.0341)	3.142 (3.142)	48.44 (48.44)
+[100/938]	0.3934 (0.4097)	0.0005 (0.0008)	0.273 (0.492)	89.06 (86.34)
+[200/938]	0.4323 (0.4091)	0.0005 (0.0006)	0.121 (0.344)	96.09 (90.38)
+[300/938]	0.4028 (0.4097)	0.0004 (0.0006)	0.218 (0.284)	93.75 (92.02)
+[400/938]	0.4136 (0.4099)	0.0004 (0.0005)	0.223 (0.248)	94.53 (93.03)
+[500/938]	0.4037 (0.4098)	0.0005 (0.0005)	0.078 (0.221)	97.66 (93.73)
+[600/938]	0.4195 (0.4090)	0.0005 (0.0005)	0.152 (0.201)	96.09 (94.29)
+[700/938]	0.4350 (0.4099)	0.0004 (0.0005)	0.086 (0.187)	99.22 (94.69)
+[800/938]	0.4056 (0.4101)	0.0005 (0.0005)	0.169 (0.175)	94.53 (94.99)
+[900/938]	0.4208 (0.4106)	0.0004 (0.0005)	0.086 (0.165)	98.44 (95.30)
+[937/938]	0.3926 (0.4107)	0.0004 (0.0005)	0.002 (0.162)	100.00 (95.39)
+ * Train Acc 95.390
+ * Val Acc 95.640, Total time 0.82
+naive_rehersal task count 13
+learn batch task count 14
+agem learn_batch
+validation split name: 1
+ * Val Acc 95.040, Total time 0.59
+validation split name: 2
+ * Val Acc 94.740, Total time 0.79
+validation split name: 3
+ * Val Acc 94.410, Total time 0.81
+validation split name: 4
+ * Val Acc 94.270, Total time 0.80
+validation split name: 5
+ * Val Acc 94.790, Total time 0.78
+validation split name: 6
+ * Val Acc 94.590, Total time 0.88
+validation split name: 7
+ * Val Acc 95.640, Total time 0.84
+====================== 8 =======================
+Incremental class: Old valid output dimension: 70
+Incremental class: New Valid output dimension: 80
+rehersal learn batch
+Epoch:0
+LR: 0.1
+Itr		Time		  Data		  Loss		Acc
+[0/937]	0.5287 (0.5287)	0.0365 (0.0365)	3.004 (3.004)	49.22 (49.22)
+[100/937]	0.4275 (0.4404)	0.0005 (0.0008)	0.177 (0.480)	95.31 (86.26)
+[200/937]	0.4359 (0.4410)	0.0004 (0.0006)	0.172 (0.331)	94.53 (90.50)
+[300/937]	0.4552 (0.4411)	0.0004 (0.0006)	0.143 (0.273)	96.88 (92.16)
+[400/937]	0.4365 (0.4419)	0.0005 (0.0006)	0.163 (0.238)	94.53 (93.20)
+[500/937]	0.4297 (0.4430)	0.0005 (0.0005)	0.107 (0.212)	96.88 (93.90)
+[600/937]	0.4673 (0.4429)	0.0005 (0.0005)	0.065 (0.195)	98.44 (94.39)
+[700/937]	0.4389 (0.4425)	0.0005 (0.0005)	0.057 (0.181)	97.66 (94.79)
+[800/937]	0.4358 (0.4425)	0.0004 (0.0005)	0.057 (0.170)	99.22 (95.10)
+[900/937]	0.4488 (0.4421)	0.0005 (0.0005)	0.153 (0.160)	94.53 (95.38)
+[936/937]	0.4469 (0.4421)	0.0004 (0.0005)	0.046 (0.157)	97.62 (95.46)
+ * Train Acc 95.463
+ * Val Acc 94.960, Total time 0.79
+naive_rehersal task count 15
+learn batch task count 16
+agem learn_batch
+validation split name: 1
+ * Val Acc 94.800, Total time 0.64
+validation split name: 2
+ * Val Acc 94.520, Total time 0.79
+validation split name: 3
+ * Val Acc 94.260, Total time 0.80
+validation split name: 4
+ * Val Acc 93.830, Total time 0.79
+validation split name: 5
+ * Val Acc 94.560, Total time 0.86
+validation split name: 6
+ * Val Acc 94.480, Total time 0.87
+validation split name: 7
+ * Val Acc 94.970, Total time 0.87
+validation split name: 8
+ * Val Acc 94.960, Total time 0.89
+====================== 9 =======================
+Incremental class: Old valid output dimension: 80
+Incremental class: New Valid output dimension: 90
+rehersal learn batch
+Epoch:0
+LR: 0.1
+Itr		Time		  Data		  Loss		Acc
+[0/938]	0.5403 (0.5403)	0.0368 (0.0368)	3.661 (3.661)	42.97 (42.97)
+[100/938]	0.4782 (0.4658)	0.0004 (0.0008)	0.180 (0.463)	96.09 (86.93)
+[200/938]	0.4650 (0.4652)	0.0004 (0.0006)	0.104 (0.326)	96.88 (90.57)
+[300/938]	0.4877 (0.4697)	0.0005 (0.0006)	0.156 (0.265)	92.97 (92.35)
+[400/938]	0.4661 (0.4706)	0.0004 (0.0005)	0.085 (0.232)	97.66 (93.32)
+[500/938]	0.4772 (0.4709)	0.0004 (0.0005)	0.087 (0.210)	96.09 (93.95)
+[600/938]	0.4631 (0.4723)	0.0004 (0.0005)	0.149 (0.192)	96.88 (94.44)
+[700/938]	0.4810 (0.4722)	0.0005 (0.0005)	0.225 (0.179)	93.75 (94.84)
+[800/938]	0.4742 (0.4724)	0.0004 (0.0005)	0.134 (0.167)	95.31 (95.17)
+[900/938]	0.4688 (0.4724)	0.0004 (0.0005)	0.050 (0.158)	99.22 (95.45)
+[937/938]	0.4598 (0.4722)	0.0004 (0.0005)	0.089 (0.155)	96.88 (95.53)
+ * Train Acc 95.535
+ * Val Acc 95.330, Total time 0.79
+naive_rehersal task count 17
+learn batch task count 18
+agem learn_batch
+validation split name: 1
+ * Val Acc 94.710, Total time 0.60
+validation split name: 2
+ * Val Acc 94.520, Total time 0.78
+validation split name: 3
+ * Val Acc 94.220, Total time 0.78
+validation split name: 4
+ * Val Acc 93.730, Total time 0.78
+validation split name: 5
+ * Val Acc 94.350, Total time 0.82
+validation split name: 6
+ * Val Acc 94.370, Total time 0.78
+validation split name: 7
+ * Val Acc 94.780, Total time 0.85
+validation split name: 8
+ * Val Acc 94.620, Total time 0.84
+validation split name: 9
+ * Val Acc 95.330, Total time 0.83
+====================== 10 =======================
+Incremental class: Old valid output dimension: 90
+Incremental class: New Valid output dimension: 100
+rehersal learn batch
+Epoch:0
+LR: 0.1
+Itr		Time		  Data		  Loss		Acc
+[0/938]	0.6151 (0.6151)	0.0372 (0.0372)	3.394 (3.394)	50.78 (50.78)
+[100/938]	0.5064 (0.5017)	0.0005 (0.0008)	0.142 (0.474)	95.31 (86.80)
+[200/938]	0.4917 (0.5041)	0.0004 (0.0007)	0.147 (0.331)	95.31 (90.68)
+[300/938]	0.4966 (0.5020)	0.0005 (0.0006)	0.054 (0.272)	98.44 (92.34)
+[400/938]	0.5269 (0.5045)	0.0006 (0.0006)	0.102 (0.235)	97.66 (93.27)
+[500/938]	0.5256 (0.5055)	0.0004 (0.0005)	0.086 (0.210)	96.88 (93.98)
+[600/938]	0.5757 (0.5098)	0.0005 (0.0005)	0.028 (0.192)	98.44 (94.50)
+[700/938]	0.5135 (0.5111)	0.0005 (0.0005)	0.223 (0.177)	94.53 (94.92)
+[800/938]	0.5253 (0.5104)	0.0004 (0.0005)	0.083 (0.166)	97.66 (95.24)
+[900/938]	0.5246 (0.5099)	0.0005 (0.0005)	0.093 (0.156)	95.31 (95.51)
+[937/938]	0.4803 (0.5096)	0.0004 (0.0005)	0.359 (0.153)	75.00 (95.59)
+ * Train Acc 95.591
+ * Val Acc 56.060, Total time 0.78
+naive_rehersal task count 19
+learn batch task count 20
+agem learn_batch
+validation split name: 1
+ * Val Acc 78.500, Total time 0.60
+validation split name: 2
+ * Val Acc 79.160, Total time 0.82
+validation split name: 3
+ * Val Acc 92.020, Total time 0.77
+validation split name: 4
+ * Val Acc 76.660, Total time 0.82
+validation split name: 5
+ * Val Acc 85.620, Total time 0.80
+validation split name: 6
+ * Val Acc 82.020, Total time 0.80
+validation split name: 7
+ * Val Acc 85.170, Total time 0.79
+validation split name: 8
+ * Val Acc 83.200, Total time 0.83
+validation split name: 9
+ * Val Acc 86.530, Total time 0.91
+validation split name: 10
+ * Val Acc 56.060, Total time 0.87
