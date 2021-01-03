@@ -113,10 +113,14 @@ class AGEM(Naive_Rehearsal):
         if agent_config['gan_add']:
             print('use gan method')
             self.gan_add = True
-            current_dir = os.getcwd()
+            # current_dir = os.getcwd()
+            # self.replicate_pattern = agent_config['replicate_pattern']
+            # self.generator_path = os.path.join(current_dir, 'model_file/Generator_cpu_75.pt')
+            # self.discriminator_path = os.path.join(current_dir, 'model_file/Discriminator_cpu_75.pt')
+            # print('generator:', self.generator_path)
             self.replicate_pattern = agent_config['replicate_pattern']
-            self.generator_path = os.path.join(current_dir, 'model_file/Generator_cpu_75.pt')
-            self.discriminator_path = os.path.join(current_dir, 'model_file/Discriminator_cpu_75.pt')
+            self.generator_path = agent_config['generator_path']
+            self.discriminator_path = agent_config['discriminator_path']
             print('generator:', self.generator_path)
     def grad_to_vector(self):
         vec = []

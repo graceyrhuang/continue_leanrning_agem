@@ -35,7 +35,8 @@ def run(args):
                     'optimizer':args.optimizer,
                     'print_freq':args.print_freq, 'gpuid': args.gpuid,
                     'reg_coef':args.reg_coef,
-                    'gan_add':args.gan_add, 'replicate_pattern':replicate_pattern}
+                    'gan_add':args.gan_add, 'replicate_pattern':replicate_pattern,
+                    'generator_path':args.generator_path, 'discriminator_path':args.discriminator_path,}
                     
     # print('model configration:\n', agent_config)
     agent = agents.__dict__[args.agent_type].__dict__[args.agent_name](agent_config)
@@ -109,8 +110,12 @@ def get_args(argv):
     parser.add_argument('--n_permutation', type=int, default=0, help="Enable permuted tests when >0")
     
     parser.add_argument('--gan_add', dest='gan_add', default=False, action='store_true',
-                        help="Avoid the dataset with a subset of classes doing the remapping. Ex: [2,5,6 ...] -> [0,1,2 ...]")
-    
+                        help="If adding gan to train model")
+    parser.add_argument('--generator_path', type=str, default=None,
+                        help="The root floder of generator model")
+    parser.add_argument('--discriminator_path', type=str, default=None,
+                        help="The root floder of discriminator model")
+
     parser.add_argument('--first_split_size', type=int, default=2)
     parser.add_argument('--other_split_size', type=int, default=2)
     parser.add_argument('--no_class_remap', dest='no_class_remap', default=False, action='store_true',
