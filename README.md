@@ -10,6 +10,10 @@
 In lifelong learning, the learner is presented with a sequence of tasks, incrementally building a data-driven prior, which may be leveraged to speed up learning a new task. [Gradient Episodic Memory (GEM)](https://github.com/facebookresearch/GradientEpisodicMemory) provides a creative method that alleviates forgetting while allowing beneficial transfer of knowledge to previous tasks.[Averaged GEM (A-GEM)](https://github.com/facebookresearch/agem) is an improved version of GEM, which enjoys the same or even better performance as GEM, while being almost as computationally and memory efficient as EWC and other regularization based methods.
 Both GEM and A-GEM have the same fixed-memory, which is used for previous tasks data storage. Our method proposed a new method to store the feature of previous tasks by using Conditional Conditional Generative Adversarial Nets (CGAN) to simulate past data. 
 
+## About
+
+To replicate the result in report, data can be found here, conditional GAN model can be found here.
+
 ## Environment
 
 * `Python 3.x`
@@ -37,7 +41,7 @@ python ./iBatchLearn_dual.py --gpuid ${GPUID}\
 			     --agent_name AGEM_4000   \
 			     --lr 0.1 \
 			     --reg_coef 0.5
-# A-GEM with CGAN
+# A-GEM with GAN
 python ./iBatchLearn_dual.py --gpuid ${GPUID} \
 			     --repeat ${REPEAT} \
                              --incremental_class \
